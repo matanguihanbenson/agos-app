@@ -1,0 +1,39 @@
+{
+  "rules": {
+    "bots": {
+      "$botId": {
+        ".read": "auth != null",
+        ".write": "auth != null && (auth.token.email == 'SERVICE_ACCOUNT_EMAIL' || auth.uid != null)"
+      }
+    },
+    "control_locks": {
+      "$botId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "deployments": {
+      "$id": {
+        ".read": "auth != null",
+        ".write": "auth != null && (auth.token.email == 'SERVICE_ACCOUNT_EMAIL' || auth.uid != null)",
+        "readings": {
+          "$timestamp": {
+            ".write": "auth != null && (auth.token.email == 'SERVICE_ACCOUNT_EMAIL' || auth.uid != null)"
+          }
+        }
+      }
+    },
+    "logs": {
+      "$logId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "bot_operations": {
+      "$operationId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}

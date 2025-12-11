@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "192814487730",
+    "firebase_url": "https://agos-2-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "agos-2",
+    "storage_bucket": "agos-2.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:192814487730:android:1fcfd17f4c20d577f891ab",
+        "android_client_info": {
+          "package_name": "com.example.agos_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAqa6aNsoMDZ6rM5vpxmJMurHaJMFDRKrs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

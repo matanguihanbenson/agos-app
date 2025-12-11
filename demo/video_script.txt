@@ -1,0 +1,100 @@
+AGOS System Demo Video Script (Plain‑English)
+
+Estimated Runtime: 8–10 minutes
+Audience: Prospective users, partners, and stakeholders
+Roles: Narrator (voice-over) + screen recording operator
+
+Goals
+- Explain AGOS in simple terms: what it is and why it matters
+- Show how the Mobile App, Web App, and Simulator fit together
+- Walk through a full cleanup: plan → run → finish → review
+- Keep language friendly for non‑technical viewers
+
+Pre‑Demo Checklist (do off‑camera)
+- Start the simulator and make sure it connects to the cloud
+- Confirm at least one bot is available (example: AGOS‑BOT‑12345)
+- Sign in on both the Web App and Mobile App
+- Have a river and docking point ready (example: Masipit River)
+
+Plain‑English Process (what will happen)
+1) Plan: We schedule a cleanup in the Web App — choose a bot, area, and time.
+2) Start: The Mobile App starts the mission when it’s time.
+3) Collect: The robot in the simulator moves, collects trash, and checks water quality.
+4) Return: The robot goes back to the dock when it’s done.
+5) Review: The Web App shows the results and history.
+
+Scene 1 — Introduction (0:00–0:45)
+On‑Screen
+- Title slide: “AGOS: Autonomous Garbage‑Cleaning System”
+- Quick montage: Web App dashboard, Mobile App, and Simulator map
+Narration
+- “Meet AGOS — a system that helps clean rivers using smart robots and simple tools. In this demo, we’ll see how the mobile app, web app, and simulator work together through the cloud to plan, run, and review a cleanup.”
+
+Scene 2 — System Overview (0:45–1:45)
+On‑Screen
+- Show a simple data‑flow diagram (if available) or switch between apps while describing roles
+Narration
+- “AGOS has three parts:
+  1) Mobile App — where field operators start and monitor a cleanup.
+  2) Web App — where teams plan operations and view the results.
+  3) Simulator — a realistic test environment that acts like a robot.
+  They talk to each other using the cloud. When a cleanup starts in the Mobile App, the simulator notices and begins moving. Live data flows to the apps, and when the cleanup finishes, the results are saved for review.”
+
+Scene 3 — Web App: Plan a Cleanup (1:45–3:00)
+On‑Screen
+- Open Web App → Dashboard → Schedules → “Create Schedule”
+- Fill in: Bot, River, Operation Area (center + radius), Docking Point, Start/End time, optional Notes
+- Save the schedule and show it listed as ‘Scheduled’
+Narration
+- “In the Web App, we plan the cleanup. Pick a robot, choose the river area, set the dock, and pick the time. The plan is saved in the cloud so the Mobile App and simulator know what to do.”
+
+Scene 4 — Mobile App: Start and Monitor (3:00–4:30)
+On‑Screen
+- Open Mobile App → Schedules → select the newly created schedule
+- Tap ‘Start’ (or wait for auto‑start when the scheduled time arrives)
+- Switch to Bot status screen showing live telemetry (battery, current load, location, water metrics)
+Narration
+- “The operator opens the Mobile App and starts the cleanup. This tells the system the robot is active. Right away you’ll see live numbers: the robot’s location, how much trash it has collected, and simple water checks like pH and turbidity.”
+
+Scene 5 — Simulator: Live Operation (4:30–6:00)
+On‑Screen
+- Show the simulator UI state: boat moving, collecting trash, sampling water
+- Emphasize: load increasing beyond 10 kg if configured; recall at max capacity; returning to the correct dock
+- Optionally toggle ‘Rain’ to trigger recall
+Narration
+- “The simulator acts like a real robot. It moves through the river area, gathers trash, and checks the water. If it reaches its carrying limit or if the weather turns bad, it heads back to the dock. During the run, the apps show live updates. When it finishes, the system saves a summary of what was collected and the water quality for this cleanup.”
+
+Scene 6 — Results and Insights (6:00–7:30)
+On‑Screen
+- Web App → Schedule Details → show deployment now ‘Completed’
+- Highlight: aggregated `trash_collection` (weight, items, breakdown) and `water_quality` (averages, sample count)
+- Web App → Deployment History: show recent deployments and totals by day/bot/river
+Narration
+- “Once the cleanup is complete, the Web App shows the results. You’ll see how much trash was collected, the number of items by type, and simple averages from water checks. There’s also a history view so teams can see progress over time.”
+
+Scene 7 — What Users and the System Can Do (7:30–8:30)
+On‑Screen
+- Quick bullets overlay while scrolling through features
+Narration
+- “Users can plan cleanups, start or stop them, and review the outcomes. Behind the scenes, the system:
+  - Shares live information through the cloud
+  - Saves summaries automatically when a cleanup ends
+  - Handles special cases like rain, low battery, or full capacity
+  - Offers dashboards and history to guide decisions”
+
+Scene 8 — Closing (8:30–10:00)
+On‑Screen
+- Return to Dashboard with a completed deployment summary
+Narration
+- “AGOS helps teams clean waterways with less effort and more insight. Thank you for watching. To learn more or try a live demo, contact our team.”
+
+Appendix — Suggested Capture Moments (optional)
+- Show the robot’s status changing from “idle” to “active”
+- Show live numbers changing during the run (trash collected, water checks)
+- Show the final summary after the cleanup ends
+- Highlight the boat returning to the dock marker on the map
+
+Appendix — Common Variations
+- Auto‑start at the scheduled time without manual tap
+- Recall early due to rain using the simulator control
+- Show carrying capacity (for example, up to 15 kg) before returning

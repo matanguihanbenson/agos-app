@@ -1,0 +1,39 @@
+{
+  "rules": {
+    "bots": {
+      "$botId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "control_locks": {
+      "$botId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "deployments": {
+      "$deploymentId": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "readings": {
+          "$timestamp": {
+            ".write": "auth != null"
+          }
+        }
+      }
+    },
+    "logs": {
+      "$logId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "bot_operations": {
+      "$operationId": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    }
+  }
+}

@@ -1,0 +1,88 @@
+name: agos_app
+description: AGOS (Autonomous Garbage Observation System) - A comprehensive Flutter application for managing river cleaning bots.
+
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State Management
+  flutter_riverpod: ^3.0.0
+  riverpod_annotation: ^3.0.0
+
+  # Firebase
+  firebase_core: ^4.1.1
+  firebase_auth: ^6.1.0
+  cloud_firestore: ^6.0.2
+  firebase_database: ^12.0.2
+
+  # UI
+  google_fonts: ^6.1.0
+  fl_chart: ^0.69.0
+
+  # Maps
+  flutter_map: ^7.0.2
+  latlong2: ^0.9.1
+
+  # HTTP requests
+  http: ^1.2.2
+
+  # Location services
+  geolocator: ^10.1.0
+  permission_handler: ^11.0.1
+
+  # Utilities
+  mobile_scanner: ^7.1.2
+
+  # Additional dependencies
+  cupertino_icons: ^1.0.2
+  intl: ^0.20.2
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+  riverpod_generator: ^3.0.0
+  build_runner: ^2.4.7
+  flutter_launcher_icons: ^0.13.1
+
+flutter_icons:
+  android: true
+  ios: true
+  image_path: assets/images/logos/app-launcher.png
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: assets/images/logos/app-launcher.png
+  remove_alpha_ios: true
+  min_sdk_android: 21
+
+flutter:
+  uses-material-design: true
+
+  # To add assets to your application, add an assets section, like this:
+  assets:
+    - assets/images/logos/
+    - assets/images/backgrounds/
+
+  # An image asset can refer to one or more resolution-variant files.
+  # For details regarding adding assets from package dependencies, see
+  # https://flutter.dev/assets-and-images/#from-packages
+
+  # To add custom fonts to your application, add a fonts section here,
+  # in this format:
+  # fonts:
+  #   - family: Schyler
+  #     fonts:
+  #       - asset: fonts/Schyler-Regular.ttf
+  #       - asset: fonts/Schyler-Italic.ttf
+  #         style: italic
+  #   - family: Trajan Pro
+  #     fonts:
+  #       - asset: fonts/TrajanPro.ttf
+  #       - asset: fonts/TrajanPro_Bold.ttf
+  #         weight: 700

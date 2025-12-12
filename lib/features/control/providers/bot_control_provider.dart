@@ -1,4 +1,6 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:firebase_database/firebase_database.dart';
+
 import '../models/bot_control_state.dart';
 
 part 'bot_control_provider.g.dart';
@@ -7,6 +9,8 @@ part 'bot_control_provider.g.dart';
 class BotControl extends _$BotControl {
   // Simulation mode flag - matches the one in bot_control_page
   static const bool simulationMode = true;
+
+  final FirebaseDatabase _db = FirebaseDatabase.instance;
 
   @override
   BotControlState build(String botId) {
@@ -107,8 +111,38 @@ class BotControl extends _$BotControl {
   }
 
   // Toggle manual mode
-  void toggleManualMode(bool enabled) {
+  Future<void> toggleManualMode(bool enabled) async {
     state = state.copyWith(isManualMode: enabled);
+
+    try {
+      final ref = _db.ref('bot_controls/${state.botId}');
+      await ref.update({
+        'mode': enabled ? 'manual' : 'auto',
+        'updatedAt': ServerValue.timestamp,
+      });
+
+      if (!enabled) {
+        await ref.update({
+          'dx': 0.0,
+          'dy': 0.0,
+        });
+      }
+    } catch (_) {}
+  }
+
+  // Send joystick command (normalized dx, dy in [-1, 1])
+  Future<void> sendJoystickCommand(double dx, double dy) async {
+    if (!state.isManualMode) return;
+
+    try {
+      final ref = _db.ref('bot_controls/${state.botId}');
+      await ref.update({
+        'mode': 'manual',
+        'dx': dx,
+        'dy': dy,
+        'updatedAt': ServerValue.timestamp,
+      });
+    } catch (_) {}
   }
 
   // Disconnect from bot

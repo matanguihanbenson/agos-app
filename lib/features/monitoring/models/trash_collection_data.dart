@@ -62,19 +62,15 @@ class TrashCollectionData {
 class TrashTypes {
   static const String plastic = 'Plastic';
   static const String paper = 'Paper';
-  static const String cardboard = 'Cardboard';
-  static const String biodegradable = 'Biodegradable';
   static const String metal = 'Metal';
   static const String glass = 'Glass';
-  static const String other = 'Other';
+  static const String organic = 'Organic';
 
   static List<String> get all => [
         plastic,
         paper,
-        cardboard,
-        biodegradable,
         metal,
         glass,
-        other,
+        organic,
       ];
 }

@@ -103,6 +103,26 @@ class AuthNotifier extends Notifier<AuthState> {
         email: email,
         password: password,
       );
+
+      // After successful auth, immediately enforce single-session so that
+      // a second device gets a clear error instead of briefly "logging in".
+      final user = authService.currentUser;
+      if (user != null) {
+        // Load profile to determine role, then claim presence
+        await _loadUserProfile(user.uid, authService);
+        await _ensureSingleSession(user.uid);
+
+        // If single-session enforcement signed us out, report failure
+        if (authService.currentUser == null) {
+          state = state.copyWith(
+            isLoading: false,
+            error: 'Account is logged in on another device.',
+          );
+          return false;
+        }
+      }
+
+      state = state.copyWith(isLoading: false);
       return true;
     } catch (e) {
       state = state.copyWith(

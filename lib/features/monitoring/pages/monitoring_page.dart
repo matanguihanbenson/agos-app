@@ -586,8 +586,29 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> with SingleTick
   }
 
   Widget _buildPhLevelChart(List<WaterQualityData> data, TimePeriod period) {
+    final totalSlots = period.getTimeSlotCount();
+    if (totalSlots == 0 || data.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final sums = List<double>.filled(totalSlots, 0);
+    final counts = List<int>.filled(totalSlots, 0);
+
+    for (final d in data) {
+      final index = _getTimeSlotIndex(d.timestamp, period);
+      if (index >= 0 && index < totalSlots) {
+        sums[index] += d.phLevel;
+        counts[index] += 1;
+      }
+    }
+
+    final values = List<double>.generate(
+      totalSlots,
+      (i) => counts[i] > 0 ? sums[i] / counts[i] : 0,
+    );
+
     return _buildLineChart(
-      data.map((d) => d.phLevel).toList(),
+      values,
       'pH Level',
       AppColors.info,
       minY: 0,
@@ -597,8 +618,29 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> with SingleTick
   }
 
   Widget _buildTurbidityChart(List<WaterQualityData> data, TimePeriod period) {
+    final totalSlots = period.getTimeSlotCount();
+    if (totalSlots == 0 || data.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final sums = List<double>.filled(totalSlots, 0);
+    final counts = List<int>.filled(totalSlots, 0);
+
+    for (final d in data) {
+      final index = _getTimeSlotIndex(d.timestamp, period);
+      if (index >= 0 && index < totalSlots) {
+        sums[index] += d.turbidity;
+        counts[index] += 1;
+      }
+    }
+
+    final values = List<double>.generate(
+      totalSlots,
+      (i) => counts[i] > 0 ? sums[i] / counts[i] : 0,
+    );
+
     return _buildLineChart(
-      data.map((d) => d.turbidity).toList(),
+      values,
       'Turbidity (NTU)',
       AppColors.warning,
       minY: 0,
@@ -608,8 +650,29 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> with SingleTick
   }
 
   Widget _buildDissolvedOxygenChart(List<WaterQualityData> data, TimePeriod period) {
+    final totalSlots = period.getTimeSlotCount();
+    if (totalSlots == 0 || data.isEmpty) {
+      return const SizedBox.shrink();
+    }
+
+    final sums = List<double>.filled(totalSlots, 0);
+    final counts = List<int>.filled(totalSlots, 0);
+
+    for (final d in data) {
+      final index = _getTimeSlotIndex(d.timestamp, period);
+      if (index >= 0 && index < totalSlots) {
+        sums[index] += d.dissolvedOxygen;
+        counts[index] += 1;
+      }
+    }
+
+    final values = List<double>.generate(
+      totalSlots,
+      (i) => counts[i] > 0 ? sums[i] / counts[i] : 0,
+    );
+
     return _buildLineChart(
-      data.map((d) => d.dissolvedOxygen).toList(),
+      values,
       'Dissolved Oxygen (mg/L)',
       AppColors.success,
       minY: 0,
@@ -625,24 +688,12 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> with SingleTick
     
     if (totalSlots == 0 || allLabels.isEmpty) return const SizedBox.shrink();
     
-    // Create data map with all slots initialized to 0 (not null)
-    final Map<int, double> dataMap = {};
+    // Create spots for all time slots, using provided values as-is
+    final List<FlSpot> spots = [];
     for (int i = 0; i < totalSlots; i++) {
-      dataMap[i] = 0.0; // Default to 0 instead of null
+      final y = i < values.length ? values[i] : 0.0;
+      spots.add(FlSpot(i.toDouble(), y));
     }
-    
-    // Fill in actual data values (assuming values are in chronological order)
-    if (values.isNotEmpty) {
-      final sortedValues = List<double>.from(values.reversed);
-      for (int i = 0; i < sortedValues.length && i < totalSlots; i++) {
-        dataMap[i] = sortedValues[i];
-      }
-    }
-    
-    // Create spots for all values (including zeros)
-    final spots = dataMap.entries
-        .map((e) => FlSpot(e.key.toDouble(), e.value))
-        .toList();
     
     if (spots.isEmpty) return const SizedBox.shrink();
     
@@ -1096,10 +1147,9 @@ class _MonitoringPageState extends ConsumerState<MonitoringPage> with SingleTick
     switch (type) {
       case TrashTypes.plastic: return const Color(0xFFE91E63);
       case TrashTypes.paper: return const Color(0xFF8D6E63);
-      case TrashTypes.cardboard: return const Color(0xFFBCAAA4);
-      case TrashTypes.biodegradable: return const Color(0xFF4CAF50);
       case TrashTypes.metal: return const Color(0xFF9E9E9E);
       case TrashTypes.glass: return const Color(0xFF00BCD4);
+      case TrashTypes.organic: return const Color(0xFF4CAF50);
       default: return const Color(0xFFFF9800);
     }
   }

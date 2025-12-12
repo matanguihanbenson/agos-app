@@ -87,7 +87,16 @@ class PresenceService {
     final rootRef = _userPresenceRef(uid);
     final platformRef = _db.ref('presence/users/$uid/$platform');
 
-    if (!isAdmin) {
+    // Determine if this is a mobile platform
+    final bool isMobilePlatform = platform == 'android' || platform == 'ios';
+
+    // For non-admin users: always enforce a single active session
+    // across all platforms.
+    //
+    // For admin users on mobile (android/iOS): enforce a single active
+    // mobile session across all mobile devices/OSes, but still allow
+    // a separate web session.
+    if (!isAdmin || isMobilePlatform) {
       try {
         final snap = await rootRef.get();
         if (snap.exists && snap.value is Map) {
@@ -95,6 +104,26 @@ class PresenceService {
           for (final entry in m.entries) {
             final val = entry.value;
             if (val is Map) {
+              final entryPlatform = entry.key;
+              final bool isEntryMobile =
+                  entryPlatform == 'android' || entryPlatform == 'ios';
+
+              // Decide whether this existing session should block the
+              // current claim.
+              // - Non-admins: any active session (web or mobile) blocks.
+              // - Admins on mobile: only other active mobile sessions block
+              //   so they can still have one web + one mobile session.
+              bool shouldCheck;
+              if (!isAdmin) {
+                shouldCheck = true;
+              } else {
+                shouldCheck = isMobilePlatform && isEntryMobile;
+              }
+
+              if (!shouldCheck) {
+                continue;
+              }
+
               final curExpires = (val['expiresAt'] as num?)?.toInt() ?? 0;
               final curSession = val['sessionId'] as String?;
               if (curSession != null && curSession.isNotEmpty && curExpires > now && curSession != sessionId) {

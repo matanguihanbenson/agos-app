@@ -43,8 +43,9 @@ class _DeploymentHistoryPageState
 
     try {
       final auth = ref.read(authProvider);
-      final userId = auth.currentUser?.uid;
-      final isAdmin = auth.userProfile?.isAdmin ?? false;
+      final profile = auth.userProfile;
+      final userId = profile?.id ?? auth.currentUser?.uid;
+      final isAdmin = profile?.isAdmin ?? false;
 
       if (userId == null) {
         setState(() {
@@ -77,14 +78,13 @@ class _DeploymentHistoryPageState
       final firestore = FirebaseFirestore.instance;
       Query query = firestore.collection('deployments').orderBy('created_at', descending: true);
 
-      // Role-based filter
-      if (!isAdmin) {
-        // Field operator: show only deployments they were involved in
-        query = query.where('owner_admin_id', isEqualTo: userId);
-      } else {
-        // Admin: show deployments they own
-        query = query.where('owner_admin_id', isEqualTo: userId);
-      }
+      // Role-based filter: both admins and field operators should see
+      // deployments belonging to the admin ecosystem. For admins this is
+      // their own id; for field operators it is the admin that created them.
+      final ownerAdminId = profile != null
+          ? (profile.isAdmin ? profile.id : (profile.createdBy ?? profile.id))
+          : userId;
+      query = query.where('owner_admin_id', isEqualTo: ownerAdminId);
 
       // Status filter
       if (_statusFilter != 'all') {

@@ -965,6 +965,7 @@ currentControllerName,
                 Switch(
                   value: state.isManualMode,
                   onChanged: (value) {
+                    // Toggle manual/auto mode and propagate to simulator via RTDB
                     ref.read(botControlProvider(widget.botId).notifier).toggleManualMode(value);
                   },
                   activeTrackColor: AppColors.primary,
@@ -1010,16 +1011,8 @@ currentControllerName,
                   size: 220,
                   innerSize: 90,
                   onPositionChanged: (dx, dy) {
-                    // Handle joystick movement
-                    // dx and dy are normalized values between -1 and 1
-                    // Implement actual bot control here
-                    // Example:
-                    // print('Joystick position: dx=$dx, dy=$dy');
-                    // BluetoothService.sendNavigationCommand(
-                    //   botId: widget.botId,
-                    //   dx: dx,
-                    //   dy: dy,
-                    // );
+                    // Send joystick vector to simulator via RTDB when in manual mode
+                    ref.read(botControlProvider(widget.botId).notifier).sendJoystickCommand(dx, dy);
                   },
                 ),
                 const SizedBox(height: 16),

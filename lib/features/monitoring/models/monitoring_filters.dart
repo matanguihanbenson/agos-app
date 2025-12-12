@@ -30,12 +30,12 @@ enum TimePeriod {
           end: DateTime(now.year, now.month, now.day, 23, 59, 59),
         );
       case TimePeriod.week:
-        // Current month's weeks
-        final startOfMonth = DateTime(now.year, now.month, 1);
-        final endOfMonth = DateTime(now.year, now.month + 1, 0);
+        // Last 7 days including today
+        final startOfRange = DateTime(now.year, now.month, now.day).subtract(const Duration(days: 6));
+        final endOfRange = DateTime(now.year, now.month, now.day, 23, 59, 59);
         return DateTimeRange(
-          start: startOfMonth,
-          end: endOfMonth,
+          start: startOfRange,
+          end: endOfRange,
         );
       case TimePeriod.month:
         return DateTimeRange(

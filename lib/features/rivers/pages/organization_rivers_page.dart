@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../core/widgets/app_bar.dart';
 import '../../../core/widgets/loading_indicator.dart';
 import '../../../core/widgets/empty_state.dart';
@@ -28,6 +29,9 @@ class _OrganizationRiversPageState extends ConsumerState<OrganizationRiversPage>
   final _searchController = TextEditingController();
   String _searchQuery = '';
 
+  // Simple in-memory cache to avoid re-querying stats repeatedly
+  final Map<String, Map<String, dynamic>> _riverStats = {};
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +44,44 @@ class _OrganizationRiversPageState extends ConsumerState<OrganizationRiversPage>
   void dispose() {
     _searchController.dispose();
     super.dispose();
+  }
+
+  Future<Map<String, dynamic>> _getRiverStats(String riverId) async {
+    if (_riverStats.containsKey(riverId)) {
+      return _riverStats[riverId]!;
+    }
+
+    try {
+      final deploymentsSnapshot = await FirebaseFirestore.instance
+          .collection('deployments')
+          .where('river_id', isEqualTo: riverId)
+          .get();
+
+      final deployments = deploymentsSnapshot.docs;
+      final totalDeployments = deployments.length;
+
+      double totalTrash = 0.0;
+      for (final doc in deployments) {
+        final data = doc.data();
+        if (data['trash_collection'] != null && data['trash_collection'] is Map<String, dynamic>) {
+          final trashData = data['trash_collection'] as Map<String, dynamic>;
+          final weightRaw = trashData['total_weight'];
+          if (weightRaw is num) {
+            totalTrash += weightRaw.toDouble();
+          }
+        }
+      }
+
+      final stats = {
+        'totalDeployments': totalDeployments,
+        'totalTrashCollected': totalTrash,
+      };
+
+      _riverStats[riverId] = stats;
+      return stats;
+    } catch (_) {
+      return {'totalDeployments': 0, 'totalTrashCollected': 0.0};
+    }
   }
 
   @override
@@ -261,29 +303,39 @@ class _OrganizationRiversPageState extends ConsumerState<OrganizationRiversPage>
               ),
               const SizedBox(height: 16),
 
-              // Statistics
-              Row(
-                children: [
-                  Expanded(
-                    child: _buildStatChip(
-                      Icons.event,
-                      'Deployments',
-                      river.totalDeployments.toString(),
-                      Colors.blue,
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _buildStatChip(
-                      Icons.cleaning_services,
-                      'Trash',
-                      river.totalTrashCollected != null
-                          ? '${river.totalTrashCollected!.toStringAsFixed(1)} kg'
-                          : '0 kg',
-                      Colors.green,
-                    ),
-                  ),
-                ],
+              // Statistics (computed from deployments for reliable admin view)
+              FutureBuilder<Map<String, dynamic>>(
+                future: _getRiverStats(river.id),
+                builder: (context, snapshot) {
+                  final stats = snapshot.data ?? const {
+                    'totalDeployments': 0,
+                    'totalTrashCollected': 0.0,
+                  };
+                  final totalDeployments = stats['totalDeployments'] as int? ?? 0;
+                  final totalTrash = stats['totalTrashCollected'] as double? ?? 0.0;
+
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: _buildStatChip(
+                          Icons.event,
+                          'Deployments',
+                          '$totalDeployments',
+                          Colors.blue,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _buildStatChip(
+                          Icons.cleaning_services,
+                          'Trash',
+                          '${totalTrash.toStringAsFixed(1)} kg',
+                          Colors.green,
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
 
               if (river.lastDeployment != null) ...[

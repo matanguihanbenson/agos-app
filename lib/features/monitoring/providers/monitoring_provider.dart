@@ -302,23 +302,35 @@ class MonitoringNotifier extends Notifier<MonitoringState> {
   }
   
   String? _mapTrashTypeString(String typeString) {
-    switch (typeString.toLowerCase()) {
-      case 'plastic':
-        return TrashTypes.plastic;
-      case 'paper':
-        return TrashTypes.paper;
-      case 'biodegradable':
-      case 'organic':
-        return TrashTypes.biodegradable;
-      case 'cardboard':
-        return TrashTypes.cardboard;
-      case 'metal':
-        return TrashTypes.metal;
-      case 'glass':
-        return TrashTypes.other; // Map glass to other for now
-      default:
-        return TrashTypes.other;
+    final type = typeString.toLowerCase();
+
+    if (type.contains('plastic')) {
+      return TrashTypes.plastic;
     }
+
+    if (type.contains('paper')) {
+      return TrashTypes.paper;
+    }
+
+    // Treat cardboard as paper for reporting
+    if (type.contains('cardboard')) {
+      return TrashTypes.paper;
+    }
+
+    if (type.contains('metal')) {
+      return TrashTypes.metal;
+    }
+
+    if (type.contains('glass')) {
+      return TrashTypes.glass;
+    }
+
+    // Biodegradable/organic and any other uncategorized types are grouped as Organic
+    if (type.contains('bio') || type.contains('organic')) {
+      return TrashTypes.organic;
+    }
+
+    return TrashTypes.organic;
   }
 
   Future<void> setScope(MonitoringScope scope) async {
